@@ -1,0 +1,55 @@
+# Fluxo de trabalho para execução do Terraform Destroy
+name: Terraform Destroy
+
+# Controles de execução deste fluxo de trabalho
+on:
+  # Aciona este fluxo de trabalho em eventos de push ou pull request na branch "destroy"  
+  push:
+    branches: 
+      - destroy
+
+# Variáveis configuradas no Secrets
+env: 
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: 'us-east-1'
+
+# Sequencia de execução do fluxo de trabalho 
+jobs:
+  # Fluxo de trabalho do único job chamado "terraform destroy"
+  terraform_destroy:
+    # Tipo de runner o qual o job é executado
+    runs-on: ubuntu-latest
+    
+    # Sequências de tarefas a serem executadas
+    steps:
+
+      # Faz o checkout do repositório em $GITHUB_WORKSPACE e assim o job o acessa
+      - name: Checkout code
+        uses: actions/checkout@v3
+    
+      # Configura as chaves SSH
+      - name: Setup SSH Keys
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PUBLIC_KEY }}" > ~/.ssh/id_rsa.pub
+          chmod 600 ~/.ssh/id_rsa
+          chmod 644 ~/.ssh/id_rsa.pub
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+    
+      # Configura o Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+    
+      # Comando para inicializar o Terraform
+      - name: Initialize Terraform
+        run: terraform init
+
+      # Importa o arquivo terraform.tfstate do Bucket e executar o destroy a partir dele
+      - name: Import Terraform State
+        run: terraform init -reconfigure -backend-config="bucket=apollo23-hackweek-state" -backend-config="key=terraform.tfstate"
+
+      # Comando para executar o Terraform Destroy
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve 
