@@ -61,21 +61,21 @@
     - name: Executar o comando usermod para adicionar usuário ao grupo Docker
       shell: sudo usermod -aG docker ubuntu
       
-    - name: Acessar a instância por SSH e Buildar o Dockerfile
-      become: yes
-      become_user: ubuntu
-      shell: |
-        cd /home/ubuntu/app
-        sudo docker build -t java-webservice .
-      args:
-        executable: /bin/bash
+    # - name: Acessar a instância por SSH e Buildar o Dockerfile
+    #   become: yes
+    #   become_user: ubuntu
+    #   shell: |
+    #     cd /home/ubuntu/app
+    #     sudo docker build -t java-webservice .
+    #   args:
+    #     executable: /bin/bash
 
-    - name: Executar o Container na porta 8000
-      become: yes
-      become_user: ubuntu
-      docker_container:
-        name: java-container
-        image: java-webservice
-        state: started
-        published_ports:
-          - "8000:8080" # Mapeia a porta 800 do host para a porta 8080 do container
+    # - name: Executar o Container na porta 8000
+    #   become: yes
+    #   become_user: ubuntu
+    #   docker_container:
+    #     name: java-container
+    #     image: java-webservice
+    #     state: started
+    #     published_ports:
+    #       - "8000:8080" # Mapeia a porta 800 do host para a porta 8080 do container
