@@ -1,0 +1,81 @@
+---
+- name: Instalar Docker no Host Remoto
+  hosts: apollo23_hackweek_vm  # Define o grupo de hosts que receberá essa tarefa
+  become: yes  # Permite que as tarefas sejam executadas como usuário privilegiado (sudo)
+  remote_user: ubuntu  # Define o usuário remoto a ser usado para a conexão SSH
+
+  tasks:
+    - name: Atualizar lista de pacotes
+      apt:
+        update_cache: yes  # Atualiza a lista de pacotes do sistema
+      register: apt_latest  # Registra o resultado da tarefa para uso posterior
+
+    - name: Instalar pacotes necessários
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present  # Garante que os pacotes estejam presentes no sistema
+      when: apt_latest is succeeded  # Executa apenas se a tarefa anterior (atualização) tiver sucesso
+
+    - name: Adicionar chave GPG do Docker
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg  # URL da chave GPG do Docker
+        state: present  # Garante que a chave GPG esteja presente no sistema
+
+    - name: Adicionar repositório do Docker
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable  # Adiciona o repositório do Docker
+        state: present  # Garante que o repositório esteja configurado no sistema
+
+    - name: Instalar Docker
+      apt:
+        name: docker-ce  # Instala o Docker Community Edition
+        state: present  # Garante que o Docker esteja instalado no sistema
+
+    - name: Garantir que o Docker esteja rodando
+      systemd:
+        name: docker
+        state: started  # Inicia o serviço do Docker
+        enabled: yes  # Habilita o serviço para ser iniciado automaticamente no boot
+
+    - name: Copiar chave SSH para a instância
+      copy:
+        src: ~/.ssh/id_rsa  # Origem da chave SSH no host de controle
+        dest: /home/ubuntu/.ssh/id_rsa  # Destino da chave SSH no host remoto
+        owner: ubuntu  # Define o proprietário da chave como 'ubuntu'
+        group: ubuntu  # Define o grupo da chave como 'ubuntu'
+        mode: '0600'  # Define as permissões da chave como 0600 (apenas leitura para o proprietário)
+
+    - name: Clonar repositório Git
+      become: yes  # Permite que a tarefa seja executada como usuário privilegiado (sudo)
+      become_user: ubuntu  # Define o usuário para executar a tarefa (ubuntu)
+      git:
+        repo: 'git@github.com:Everton-WS/apollo23-java.git'  # URL do repositório Git
+        dest: /home/ubuntu/app  # Diretório de destino para o clone
+        version: main  # Ramo (branch) a ser clonado
+        accept_hostkey: yes  # Aceita automaticamente a chave do host Git
+    
+    - name: Executar o comando usermod para adicionar usuário ao grupo Docker
+      shell: sudo usermod -aG docker ubuntu
+      
+    - name: Acessar a instância por SSH e Buildar o Dockerfile
+      become: yes
+      become_user: ubuntu
+      shell: |
+        cd /home/ubuntu/app
+        sudo docker build -t java-webservice .
+      args:
+        executable: /bin/bash
+
+    - name: Executar o Container na porta 8000
+      become: yes
+      become_user: ubuntu
+      docker_container:
+        name: java-container
+        image: java-webservice
+        state: started
+        published_ports:
+          - "8000:8080" # Mapeia a porta 800 do host para a porta 8080 do container
