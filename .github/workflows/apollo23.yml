@@ -115,5 +115,4 @@ jobs:
       # Executa o Playbook do Ansible
       - name: Run Ansible Playbook
         run: ansible-playbook -i inventory.ini ansible-playbook.yml --limit apollo23_hackweek_vm --private-key ~/.ssh/id_rsa
-
-        
+       
