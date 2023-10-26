@@ -56,10 +56,16 @@ jobs:
 
       # Comando para inicializar o Terraform
       - name: Terraform Init
+        env:
+          TF_VAR_db_username: ${{ secrets.TF_VAR_db_username }}
+          TF_VAR_db_password: ${{ secrets.TF_VAR_db_password }}
         run: terraform init
       
       # Comando que iŕa aplicar o Terraform
       - name: Terraform Apply
+        env:
+          TF_VAR_db_username: ${{ secrets.TF_VAR_db_username }}
+          TF_VAR_db_password: ${{ secrets.TF_VAR_db_password }}
         run: terraform apply -auto-approve
 
       # Define a saída instance_id do outputs.tf como Variável de Ambiente

@@ -24,6 +24,13 @@ resource "aws_security_group" "apollo23_hackweek_security_group" {
   }
 
   ingress {
+  from_port   = 5432
+  to_port     = 5432
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]  # Permitir acesso à porta do banco de dados
+}
+
+  ingress {
     from_port   = 8000
     to_port     = 8000
     protocol    = "tcp"
@@ -42,7 +49,7 @@ resource "aws_security_group" "apollo23_hackweek_security_group" {
 # Definindo uma instância EC2 na AWS
 resource "aws_instance" "apollo23_hackweek_vm" {
   ami           = "ami-053b0d53c279acc90"  # AMI do Ubuntu
-  instance_type = "t2.micro"  # Tipo de instância
+  instance_type = "t2.medium"  # Tipo de instância
   key_name      = aws_key_pair.apollo23_hackweek_keypair.key_name  # Chave SSH para acessar a instância
 
   vpc_security_group_ids = [aws_security_group.apollo23_hackweek_security_group.id]  # Associando o grupo de segurança à instância
@@ -62,5 +69,25 @@ resource "aws_instance" "apollo23_hackweek_vm" {
     Environment = "prod"
     Application = "Java"
     Class       = "DevOps"    
+  }
+}
+
+# Definindo o BD RDS PostgreSQL na AWS
+resource "aws_db_instance" "db_apollo23" {
+  allocated_storage    = 20
+  storage_type         = "gp2"
+  engine               = "postgres"
+  engine_version       = "15.3-R2"
+  instance_class       = "db.t3.micro"
+  username             = var.db_username
+  password             = var.db_password
+  parameter_group_name = "default.postgres15"
+
+  vpc_security_group_ids = [aws_security_group.apollo23_hackweek_security_group.id]
+
+  skip_final_snapshot = true
+
+  tags = {
+    Name = "db_apollo23"
   }
 }
