@@ -6,7 +6,7 @@ provider "aws" {
 # Definindo um grupo de segurança (Security Group) na AWS
 resource "aws_security_group" "apollo23_hackweek_security_group" {
   name        = "apollo23-hackweek-security-group"
-  description = "Security Group para SSH, HTTP e porta 8000"
+  description = "Security Group para SSH, HTTP, porta 8000 e RDS"
 
   # Regras de ingresso que permitem o tráfego de entrada
   ingress {
