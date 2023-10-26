@@ -44,12 +44,21 @@ jobs:
     
       # Comando para inicializar o Terraform
       - name: Initialize Terraform
+        env:
+          TF_VAR_db_username: ${{ secrets.TF_VAR_db_username }}
+          TF_VAR_db_password: ${{ secrets.TF_VAR_db_password }}
         run: terraform init
 
       # Importa o arquivo terraform.tfstate do Bucket e executar o destroy a partir dele
       - name: Import Terraform State
+        env:
+          TF_VAR_db_username: ${{ secrets.TF_VAR_db_username }}
+          TF_VAR_db_password: ${{ secrets.TF_VAR_db_password }}
         run: terraform init -reconfigure -backend-config="bucket=apollo23-hackweek-state" -backend-config="key=terraform.tfstate"
 
       # Comando para executar o Terraform Destroy
       - name: Terraform Destroy
+        env:
+          TF_VAR_db_username: ${{ secrets.TF_VAR_db_username }}
+          TF_VAR_db_password: ${{ secrets.TF_VAR_db_password }}
         run: terraform destroy -auto-approve 
