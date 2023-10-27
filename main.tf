@@ -100,6 +100,38 @@ resource "aws_instance" "apollo23_frontend_vm" {
   }
 }
 
+# # (Opcional) Definindo um balanceador de carga (Load Balancer) para o frontend
+# resource "aws_lb" "frontend_load_balancer" {
+#   name               = "frontend-load-balancer"
+#   internal           = false  # Se true, o balanceador de carga é interno
+#   load_balancer_type = "application"
+
+#   enable_deletion_protection = false
+
+#   subnets = ["subnet-xxxxxxxxxxx", "subnet-yyyyyyyyyyy"]  # Subnets onde o balanceador de carga será provisionado
+
+#   enable_http2 = true
+
+#   enable_cross_zone_load_balancing = true
+
+#   security_groups = [aws_security_group.apollo23_hackweek_security_group.id]
+
+#   enable_deletion_protection = false
+# }
+
+# # (Opcional) Regras do balanceador de carga (Listeners)
+# resource "aws_lb_listener" "frontend_listener" {
+#   load_balancer_arn = aws_lb.frontend_load_balancer.arn
+#   port              = 80
+#   protocol          = "HTTP"
+
+#   default_action {
+#     type             = "fixed-response"
+#     fixed_response_type = "content-type-text/html"
+#     fixed_response_content = "Hello from the frontend!"
+#   }
+# }
+
 # Definindo o BD RDS PostgreSQL na AWS
 resource "aws_db_instance" "db_apollo23" {
   allocated_storage    = 20
