@@ -38,20 +38,23 @@
         version: main  # Ramo (branch) a ser clonado
         accept_hostkey: yes  # Aceita automaticamente a chave do host Git
     
-    - name: Install Dependencies
-      ansible.builtin.yum:
-        name: -y unzip wget
+     - name: Install Dependencies on Ubuntu
       become: yes
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - unzip
+        - wget
 
     - name: Install Flutter
+      become: yes
       ansible.builtin.shell: >
         wget https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_{{ FLUTTER_VERSION }}-stable.tar.xz
         tar -xvf flutter_linux_{{ FLUTTER_VERSION }}-stable.tar.xz -C /opt
         echo 'export PATH="$PATH:/opt/flutter/bin"' >> /home/ubuntu/.bashrc
       vars:
-        FLUTTER_VERSION: 2.2.3  # Substitua com a versão do Flutter desejada
-      become: yes
-      become_user: ubuntu
+        FLUTTER_VERSION: 2.2.3
 
     # - name: Configure Environment Variables
     #   ansible.builtin.lineinfile:
