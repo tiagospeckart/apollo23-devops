@@ -3,6 +3,13 @@ provider "aws" {
   region = "us-east-1"  # Escolha a região que preferir
 }
 
+# Definindo uma VPC
+resource "aws_vpc" "apollo23_vpc" {
+  cidr_block = "10.0.0.0/16"
+  enable_dns_support = true
+  enable_dns_hostnames = true
+}
+
 # Definindo um grupo de segurança (Security Group) na AWS
 resource "aws_security_group" "apollo23_hackweek_security_group" {
   name        = "apollo23-hackweek-security-group"
