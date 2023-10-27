@@ -1,6 +1,7 @@
 ---
 - name: Provision and Configure Frontend Flutter
   hosts: apollo23_frontend_vm  # Substitua com o IP da sua instância EC2
+  become: yes # Permite que as tarefas sejam executadas como usuário privilegiado (sudo)
   remote_user: ubuntu  # Usuário remoto da instância EC2
   gather_facts: False
 
