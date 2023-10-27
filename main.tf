@@ -142,6 +142,7 @@ resource "aws_db_instance" "db_apollo23" {
   username             = var.db_username
   password             = var.db_password
   parameter_group_name = "default.postgres15"
+  publicly_accessible = true # Torna o RDS público
 
   vpc_security_group_ids = [aws_security_group.apollo23_hackweek_security_group.id]
 
