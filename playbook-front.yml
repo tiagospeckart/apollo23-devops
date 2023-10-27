@@ -50,9 +50,11 @@
     - name: Install Flutter
       become: yes
       ansible.builtin.shell: >
-        wget https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_{{ FLUTTER_VERSION }}-stable.tar.xz
-        tar -xvf flutter_linux_{{ FLUTTER_VERSION }}-stable.tar.xz -C /opt
-        echo 'export PATH="$PATH:/opt/flutter/bin"' >> /home/ubuntu/.bashrc
+          wget https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_{{ FLUTTER_VERSION }}-stable.tar.xz
+          tar -xvf flutter_linux_{{ FLUTTER_VERSION }}-stable.tar.xz -C /opt
+          echo 'export PATH="$PATH:/opt/flutter/bin"' >> /home/ubuntu/.bashrc
+      args:
+        executable: /bin/bash
       vars:
         FLUTTER_VERSION: 2.2.3
 
