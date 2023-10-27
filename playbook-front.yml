@@ -1,0 +1,81 @@
+---
+- name: Provision and Configure Frontend Flutter
+  hosts: apollo23_frontend_vm  # Substitua com o IP da sua instância EC2
+  become: yes # Permite que as tarefas sejam executadas como usuário privilegiado (sudo)
+  remote_user: ubuntu  # Usuário remoto da instância EC2
+  gather_facts: False
+
+  tasks:
+    - name: Atualizar lista de pacotes
+      apt:
+        update_cache: yes  # Atualiza a lista de pacotes do sistema
+      register: apt_latest  # Registra o resultado da tarefa para uso posterior
+
+    - name: Instalar pacotes necessários
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present  # Garante que os pacotes estejam presentes no sistema
+      when: apt_latest is succeeded  # Executa apenas se a tarefa anterior (atualização) tiver sucesso
+
+    - name: Copiar chave SSH para a instância
+      copy:
+        src: ~/.ssh/id_rsa  # Origem da chave SSH no host de controle
+        dest: /home/ubuntu/.ssh/id_rsa  # Destino da chave SSH no host remoto
+        owner: ubuntu  # Define o proprietário da chave como 'ubuntu'
+        group: ubuntu  # Define o grupo da chave como 'ubuntu'
+        mode: '0600'  # Define as permissões da chave como 0600 (apenas leitura para o proprietário)
+
+    - name: Clonar repositório Git
+      become: yes  # Permite que a tarefa seja executada como usuário privilegiado (sudo)
+      become_user: ubuntu  # Define o usuário para executar a tarefa (ubuntu)
+      git:
+        repo: 'git@github.com:Everton-WS/apollo23-flutter.git'  # URL do repositório Git
+        dest: /home/ubuntu/app  # Diretório de destino para o clone
+        version: main  # Ramo (branch) a ser clonado
+        accept_hostkey: yes  # Aceita automaticamente a chave do host Git
+    
+    - name: Install Dependencies on Ubuntu
+      become: yes
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - unzip
+        - wget
+
+    - name: Install Flutter
+      become: yes
+      ansible.builtin.shell: |
+          wget https://storage.googleapis.com/flutter_infra/releases/stable/linux/flutter_linux_{{ FLUTTER_VERSION }}-stable.tar.xz
+          tar -xvf flutter_linux_{{ FLUTTER_VERSION }}-stable.tar.xz -C /opt
+          echo 'export PATH="$PATH:/opt/flutter/bin"' >> /home/ubuntu/.bashrc
+      args:
+        executable: /bin/bash
+      vars:
+        FLUTTER_VERSION: 2.2.3
+
+    # - name: Configure Environment Variables
+    #   ansible.builtin.lineinfile:
+    #     path: /home/ubuntu/.bashrc
+    #     line: 'export BACKEND_URL=http://your-backend-ip:your-backend-port'  # Substitua com a URL do backend
+    #   become: yes
+    #   become_user: ubuntu
+
+    # - name: Build Flutter App
+    #   ansible.builtin.shell: >
+    #     cd /home/ubuntu/app
+    #     flutter pub get
+    #     flutter build web
+    #   become: yes
+    #   become_user: ubuntu
+
+    # - name: Deploy Frontend
+    #   ansible.builtin.shell: >
+    #     # Neste ponto, você pode implementar o aplicativo Flutter em um servidor web, como o Nginx ou o Apache.
+    #     # Configure esta tarefa de acordo com suas necessidades.
+    #   become: yes
+    #   become_user: ubuntu

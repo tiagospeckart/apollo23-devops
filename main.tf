@@ -82,7 +82,7 @@ resource "aws_instance" "apollo23_backend_vm" {
 # Definindo uma instância EC2 na AWS para o frontend
 resource "aws_instance" "apollo23_frontend_vm" {
   ami           = "ami-053b0d53c279acc90"  # AMI para o frontend
-  instance_type = "t2.micro"  # Tipo de instância para o frontend 
+  instance_type = "t2.medium"  # Tipo de instância para o frontend 
   key_name      = aws_key_pair.apollo23_hackweek_keypair.key_name  # Nome da chave SSH para acessar a instância
 
   vpc_security_group_ids = [aws_security_group.apollo23_hackweek_security_group.id]  # Associando o mesmo grupo de segurança
