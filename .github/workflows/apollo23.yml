@@ -136,7 +136,7 @@ jobs:
           echo "[backend]" > inventory.ini
           echo "apollo23_backend_vm ansible_host=${instance_ip}" >> inventory.ini
           echo "" >> inventory.ini
-          echo "[frontend]" > inventory.ini
+          echo "[frontend]" >> inventory.ini
           echo "apollo23_frontend_vm ansible_host=${frontend_ip}" >> inventory.ini
           echo "" >> inventory.ini  
         
