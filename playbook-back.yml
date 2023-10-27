@@ -1,6 +1,6 @@
 ---
 - name: Instalar Docker no Host Remoto
-  hosts: all  # Define o grupo de hosts que receberá essa tarefa
+  hosts: "apollo23_backend_vm"  # Define o grupo de hosts que receberá essa tarefa
   become: yes  # Permite que as tarefas sejam executadas como usuário privilegiado (sudo)
   remote_user: ubuntu  # Define o usuário remoto a ser usado para a conexão SSH
 
