@@ -38,7 +38,7 @@
         version: main  # Ramo (branch) a ser clonado
         accept_hostkey: yes  # Aceita automaticamente a chave do host Git
     
-     - name: Install Dependencies on Ubuntu
+    - name: Install Dependencies on Ubuntu
       become: yes
       apt:
         name: "{{ item }}"
