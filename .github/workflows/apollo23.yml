@@ -72,8 +72,12 @@ jobs:
       - name: Set INSTANCE_ID environment variable
         run: echo "instance_id=`terraform output -raw instance_id`" >> $GITHUB_ENV
 
+      # Define a saída instance_id do outputs.tf como Variável de Ambiente
+      - name: Set FRONTEND_ID environment variable
+        run: echo "frontend_id=`terraform output -raw frontend_id`" >> $GITHUB_ENV
+
       # Tarefa que aguarda a instância ficar pronta
-      - name: Verificar status da instância EC2
+      - name: Verificar status da instância EC2 backend
         run: |
           instance_id="${instance_id}"
          
@@ -90,10 +94,32 @@ jobs:
             fi
           done
       
+      # Tarefa que aguarda a instância ficar pronta
+      - name: Verificar status da instância EC2 frontend
+        run: |
+          frontend_id="${frontend_id}"
+         
+          while true; do
+            status=$(aws ec2 describe-instance-status --instance-id $frontend_id --query 'InstanceStatuses[0].InstanceStatus.Status' --output text)
+            system_status=$(aws ec2 describe-instance-status --instance-id $frontend_id --query 'InstanceStatuses[0].SystemStatus.Status' --output text)
+
+            if [ "$status" == "ok" ] && [ "$system_status" == "ok" ]; then
+              echo "A instância possui 2/2 verificações aprovadas."
+              break  # Sai do loop quando a condição é atendida
+            else
+              echo "Aguardando instância estar com 2/2 verificações aprovadas..."
+              sleep 10
+            fi
+          done
+
       # Define a saída instance_ip do outputs.tf como Variável de Ambiente
       - name: Set INSTANCE_IP environment variable
         run: echo "instance_ip=`terraform output -raw instance_ip`" >> $GITHUB_ENV
    
+      # Define a saída instance_ip do outputs.tf como Variável de Ambiente
+      - name: Set FRONTEND_IP environment variable
+        run: echo "frontend_ip=`terraform output -raw frontend_ip`" >> $GITHUB_ENV
+
       # Configura o Python e a versão
       - name: Setup Python
         uses: actions/setup-python@v2
@@ -109,6 +135,9 @@ jobs:
         run: |
           echo "[apollo23_backend_vm]" > inventory.ini
           echo "${instance_ip}" >> inventory.ini
+          echo "" >> inventory.ini
+          echo "[apollo23_frontend_vm]" > inventory.ini
+          echo "${frontend_ip}" >> inventory.ini
           echo "" >> inventory.ini  
         
       # Exibe o arquivo inventory.ini para verificação se está no formato adequado
@@ -118,7 +147,10 @@ jobs:
       - name: host key
         run: ssh-keyscan ${instance_ip} >> ~/.ssh/known_hosts
       
+      - name: host key
+        run: ssh-keyscan ${frontend_ip} >> ~/.ssh/known_hosts
+
       # Executa o Playbook do Ansible
       - name: Run Ansible Playbook
-        run: ansible-playbook -i inventory.ini ansible-playbook.yml --limit apollo23_backend_vm --private-key ~/.ssh/id_rsa
+        run: ansible-playbook -i inventory.ini ansible-playbook.yml --limit all --private-key ~/.ssh/id_rsa
        
