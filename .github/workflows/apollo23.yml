@@ -107,7 +107,7 @@ jobs:
       # Cria de forma automatizada o arquivo inventory.ini do Ansible
       - name: Create inventory Ansible
         run: |
-          echo "[apollo23_hackweek_vm]" > inventory.ini
+          echo "[apollo23_backend_vm]" > inventory.ini
           echo "${instance_ip}" >> inventory.ini
           echo "" >> inventory.ini  
         

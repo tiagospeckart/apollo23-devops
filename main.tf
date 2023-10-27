@@ -24,11 +24,18 @@ resource "aws_security_group" "apollo23_hackweek_security_group" {
   }
 
   ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Permite qualquer endereço IP para HTTPS
+  }
+
+  ingress {
   from_port   = 5432
   to_port     = 5432
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]  # Permitir acesso à porta do banco de dados
-}
+  }
 
   ingress {
     from_port   = 8000
@@ -46,8 +53,8 @@ resource "aws_security_group" "apollo23_hackweek_security_group" {
   }
 }
 
-# Definindo uma instância EC2 na AWS
-resource "aws_instance" "apollo23_hackweek_vm" {
+# Definindo uma instância EC2 na AWS para o backend
+resource "aws_instance" "apollo23_backend_vm" {
   ami           = "ami-053b0d53c279acc90"  # AMI do Ubuntu
   instance_type = "t2.medium"  # Tipo de instância
   key_name      = aws_key_pair.apollo23_hackweek_keypair.key_name  # Chave SSH para acessar a instância
@@ -65,7 +72,7 @@ resource "aws_instance" "apollo23_hackweek_vm" {
 
   # Tags para identificação da instância
   tags = {
-    Name        = var.instance_name
+    Name        = var.ec2_backend_name
     Environment = "prod"
     Application = "Java"
     Class       = "DevOps"    
