@@ -3,49 +3,6 @@ provider "aws" {
   region = "us-east-1"  # Escolha a região que preferir
 }
 
-# Definindo uma VPC
-resource "aws_vpc" "apollo23_vpc" {
-  cidr_block = "173.23.0.0/16"
-  enable_dns_support = true
-  enable_dns_hostnames = true
-}
-
-# Definindo a Sub-rede Privada
-resource "aws_subnet" "private_subnet" {
-  vpc_id = aws_vpc.apollo23_vpc.id
-  cidr_block = "10.0.0.0/24"
-  availability_zone = "us-east-1a"
-}
-
-# Definindo a Sub-rede Pública
-resource "aws_subnet" "public_subnet" {
-  vpc_id = aws_vpc.apollo23_vpc.id
-  cidr_block = "10.0.1.0/24"
-  availability_zone = "us-east-1b"
-  map_public_ip_on_launch = true
-}
-
-# Definindo uma tabela de Rotas
-resource "aws_route_table" "apollo23_route_table" {
-  vpc_id = aws_vpc.apollo23_vpc.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.apollo23_igw.id
-  }
-}
-
-# Associe a tabela de rotas à sub-rede pública
-resource "aws_route_table_association" "public_subnet_association" {
-  count          = length(aws_subnet.public_subnet)
-  subnet_id      = aws_subnet.public_subnet.id
-  route_table_id = aws_route_table.apollo23_route_table.id
-}
-
-# Crie um gateway de Internet
-resource "aws_internet_gateway" "apollo23_igw" {
-  vpc_id = aws_vpc.apollo23_vpc.id
-}
-
 # Definindo um grupo de segurança (Security Group) na AWS
 resource "aws_security_group" "apollo23_hackweek_security_group" {
   name        = "apollo23-hackweek-security-group"
