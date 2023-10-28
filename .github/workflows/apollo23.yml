@@ -154,7 +154,6 @@ jobs:
       - name: Set DB_ENDPOINT with environment variable
         run: | 
           echo "env_url=`terraform output -raw db_endpoint`" >> $GITHUB_ENV
-          cat env_url
 
       # Executa o Playbook Backend
       - name: Run Ansible Playbook Backend
