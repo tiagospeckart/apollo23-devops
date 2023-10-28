@@ -154,6 +154,12 @@ jobs:
       - name: Set DB_ENDPOINT with environment variable
         run: echo "env_url=`terraform output -raw db_endpoint`" >> $GITHUB_ENV
 
+      # Display o de_endpoint
+      - name: Display db)endpoint Set
+        run: |
+          echo "${env_url}" > endpoint_db
+          cat endpoint_db
+          
       # Executa o Playbook Backend
       - name: Run Ansible Playbook Backend
         run: ansible-playbook -i inventory.ini playbook-back.yml --limit "apollo23_backend_vm" --private-key ~/.ssh/id_rsa
