@@ -29,3 +29,8 @@ output "instance_public_dns" {
 output "frontend_public_dns" {
   value = aws_instance.apollo23_frontend_vm.public_dns
 }
+
+# Este output fornece o endpoint do RDS PostgreSQL
+output "db_endpoint" {
+  value = aws_db_instance.db_apollo23.endpoint
+}
