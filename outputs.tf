@@ -32,5 +32,5 @@ output "frontend_public_dns" {
 
 # Este output fornece o endpoint do RDS PostgreSQL
 output "db_endpoint" {
-  value = try(aws_db_instance.db_apollo23.this[0].endpoint, null)
+  value = "${aws_db_instance.db_apollo23.endpoint}"
 }
