@@ -71,21 +71,20 @@
         src: .env.j2
         dest: /home/ubuntu/app/.env
 
-    # - name: Acessar a instância por SSH e Buildar o Dockerfile
-    #   become: yes
-    #   become_user: ubuntu
-    #   shell: |
-    #     cd /home/ubuntu/app
-    #     sudo docker build -t java-webservice .
-    #   args:
-    #     executable: /bin/bash
+    - name: Acessar a instância por SSH e Buildar o Docker-compose
+      become: yes
+      become_user: ubuntu
+      shell: |
+        cd /home/ubuntu/app
+        sudo docker-compose build
+      args:
+        executable: /bin/bash
 
-    # - name: Executar o Container na porta 8000
-    #   become: yes
-    #   become_user: ubuntu
-    #   docker_container:
-    #     name: java-container
-    #     image: java-webservice
-    #     state: started
-    #     published_ports:
-    #       - "8000:8080" # Mapeia a porta 800 do host para a porta 8080 do container
+    - name: Acessar a instância por SSH e Executar a Imagem
+        become: yes
+        become_user: ubuntu
+        shell: |
+          cd /home/ubuntu/app
+          sudo docker-compose up -d
+        args:
+          executable: /bin/bash
