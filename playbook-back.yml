@@ -81,10 +81,11 @@
         executable: /bin/bash
 
     - name: Acessar a instância por SSH e Executar a Imagem
-        become: yes
-        become_user: ubuntu
-        shell: |
-          cd /home/ubuntu/app
-          sudo docker-compose up -d
-        args:
-          executable: /bin/bash
+      become: yes
+      become_user: ubuntu
+      shell: |
+        cd /home/ubuntu/app
+        sudo docker-compose up -d
+      args:
+        executable: /bin/bash
+        
