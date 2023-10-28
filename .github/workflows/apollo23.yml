@@ -169,5 +169,4 @@ jobs:
       # Executa o Playbook Frontend
       - name: Run Ansible Playbook Frontend
         run : ansible-playbook -i inventory.ini playbook-front.yml --limit "apollo23_frontend_vm" --private-key ~/.ssh/id_rsa
-
       
