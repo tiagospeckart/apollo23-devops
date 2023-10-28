@@ -41,6 +41,11 @@
         state: started  # Inicia o serviço do Docker
         enabled: yes  # Habilita o serviço para ser iniciado automaticamente no boot
 
+    - name: Instalar Docker Compose
+      apt:
+        name: docker-compose
+        state: present
+
     - name: Copiar chave SSH para a instância
       copy:
         src: ~/.ssh/id_rsa  # Origem da chave SSH no host de controle
@@ -88,4 +93,3 @@
         sudo docker-compose up -d
       args:
         executable: /bin/bash
-        
