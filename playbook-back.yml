@@ -61,12 +61,16 @@
     - name: Executar o comando usermod para adicionar usuário ao grupo Docker
       shell: sudo usermod -aG docker ubuntu
 
-    - name: Create .env file
+    - name: Criar arquivo .env se ele não existir
+      command: touch /home/ubuntu/app/.env
+      args:
+        creates: /home/ubuntu/app/.env
+
+    - name: Preencher o arquivo .env com as variáveis
       template:
         src: .env.j2
         dest: /home/ubuntu/app/.env
-      when: "'PROFILE' in lookup('env', 'PROFILE')"
-      
+
     # - name: Acessar a instância por SSH e Buildar o Dockerfile
     #   become: yes
     #   become_user: ubuntu
