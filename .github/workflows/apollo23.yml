@@ -152,7 +152,7 @@ jobs:
 
       # Define a saída db_endpoint do outputs.tf como Variável de Ambiente
       - name: Set DB_ENDPOINT with environment variable
-        run: echo "env_url=${{ steps.terraform.outputs.db_endpoint }}" >> $GITHUB_ENV
+        run: echo "env_url=`terraform output -raw db_endpoint`" >> $GITHUB_ENV
 
       # Executa o Playbook Backend
       - name: Run Ansible Playbook Backend
