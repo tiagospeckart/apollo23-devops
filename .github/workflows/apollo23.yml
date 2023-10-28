@@ -159,7 +159,7 @@ jobs:
         run: |
           echo "${env_url}" > endpoint_db
           cat endpoint_db
-          
+
       # Executa o Playbook Backend
       - name: Run Ansible Playbook Backend
         run: ansible-playbook -i inventory.ini playbook-back.yml --limit "apollo23_backend_vm" --private-key ~/.ssh/id_rsa
