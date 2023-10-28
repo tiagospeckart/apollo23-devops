@@ -159,7 +159,7 @@ jobs:
         run: ansible-playbook -i inventory.ini playbook-back.yml --limit "apollo23_backend_vm" --private-key ~/.ssh/id_rsa
         env:
           PROFILE: ${{ secrets.PROFILE }}
-          URL: ${env_url}
+          URL: echo "${env_url}"
           PORT: ${{ secrets.PORT }}
           DATABASE: ${{ secrets.DATABASE }}
           USER: ${{ secrets.TF_VAR_db_username }}
