@@ -48,7 +48,7 @@
 
     - name: Instalar o Nginx
       apt:
-        name: Nginx
+        name: nginx
         state: present
 
     - name: Copiar chave SSH para a instância
