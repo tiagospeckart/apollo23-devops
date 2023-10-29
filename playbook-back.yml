@@ -46,6 +46,11 @@
         name: docker-compose
         state: present
 
+    - name: Instalar o Nginx
+      apt:
+        name: Nginx
+        state: present
+
     - name: Copiar chave SSH para a instância
       copy:
         src: ~/.ssh/id_rsa  # Origem da chave SSH no host de controle
@@ -93,3 +98,8 @@
         sudo docker-compose up -d
       args:
         executable: /bin/bash
+
+    - name: Iniciar o serviço Nginx
+      service:
+        name: nginx
+        state: started    
