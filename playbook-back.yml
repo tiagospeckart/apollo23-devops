@@ -51,10 +51,10 @@
         name: nginx
         state: present
     
-    - name: Iniciar o serviço Nginx
+    - name: Para o serviço Nginx
       service:
         name: nginx
-        state: started 
+        state: stopped 
 
     - name: Copiar chave SSH para a instância
       copy:
