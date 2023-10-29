@@ -50,6 +50,11 @@
       apt:
         name: nginx
         state: present
+    
+    - name: Iniciar o serviço Nginx
+      service:
+        name: nginx
+        state: started 
 
     - name: Copiar chave SSH para a instância
       copy:
@@ -98,8 +103,4 @@
         sudo docker-compose up -d
       args:
         executable: /bin/bash
-
-    - name: Iniciar o serviço Nginx
-      service:
-        name: nginx
-        state: started    
+   
