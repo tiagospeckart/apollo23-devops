@@ -46,15 +46,15 @@
         name: docker-compose
         state: present
 
-    # - name: Instalar o Nginx
-    #   apt:
-    #     name: nginx
-    #     state: present
+    - name: Instalar o Nginx
+      apt:
+        name: nginx
+        state: present
     
-    # - name: Para o serviço Nginx
-    #   service:
-    #     name: nginx
-    #     state: stopped 
+    - name: Para o serviço Nginx
+      service:
+        name: nginx
+        state: stopped 
 
     - name: Copiar chave SSH para a instância
       copy:
