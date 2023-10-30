@@ -35,8 +35,15 @@ Incluir uma camada de gamificação e interação ao se inscrever em uma palestr
 Para instalar e usar o repositório, você precisará seguir estas etapas:
 
 1.  Crie uma conta no GitHub e clone este repositório e os de FLUTTER e JAVA para sua máquina local e após de um push deles para sua conta GitHub.
-2.  Obtenha acesso ao provider cloud AWS.
-3.  Insira as seguintes variáveis de ambiente no Secrets do Repositório com estes arquivos e diretórios do seu Github:
+2.  No Repositório DevOps local, crie o par de chaves SSH no diretório raiz e configure o .gitignore para não permitir o envio destas ao repositório remoto. Comando no terminal:
+
+```
+ssh-keygen -t rsa -b 4096 -C "comentário_ou_email" -f ./id_rsa
+
+```
+
+3.  Obtenha acesso ao provider cloud AWS.
+4.  Insira as seguintes variáveis de ambiente no Secrets do Repositório com estes arquivos e diretórios do seu Github:
 
 ```
 AWS_ACCESS_KEY_ID: <seu_id_de_acesso_da_aws>
@@ -56,9 +63,9 @@ SCHEMA: <estrutura_lógica_do_banco_de_dados_utilizada>
 
 ```
 
-4.  Adicione a chave SSH pública nos seus repositórios de FLUTTER e JAVA no deploy key.
-5.  Configure o Terraform para seu ambiente.
-6.  Faça um push ou pull request na branch "main" do repositório.
+5.  Adicione a chave SSH pública nos seus repositórios de FLUTTER e JAVA no deploy key.
+6.  Configure o Terraform para seu ambiente.
+7.  Faça um push ou pull request na branch "main" do repositório.
 
 O fluxo de trabalho do GitHub será executado e provisionará duas instâncias AWS, um RDS PostgreSQL, e as apliações backend e frontend em cada instância para você.
 
@@ -69,7 +76,24 @@ http://<endereço_ip_da_instância_backend>:8000/api/swagger-ui/index.html
 
 ```
 
-7. Para certificação SSL e configuração de um domínio como por exemplo seudomínio.com.br, siga as instruções do Readme.md da pasta ssl.  
+8. Para certificação SSL e configuração de um domínio como por exemplo seudomínio.com.br, siga as instruções do Readme.md da pasta ssl. 
+
+9. Para encerrar os serviços da AWS, siga os seguintes passos:
+
+```
+# Na sua máquina local dentro do repositório local DevOps:
+
+- git checkout destroy # Mude para a branch destroy
+
+# Realize um commit para esta branch
+
+- git add .
+- git commit -m "destroy"
+- git push origin destroy
+
+Isso irá executar o Workflow tf_destroy.yml. Encerrando as duas EC2, o RDS PostgreSQL, apagando o Security Group e o KeyPair. O S3 Bucket deve ser excluido pelo console da AWS, assim como a Zonas Hospedadas do Route 53. 
+
+```
 
 Para obter mais informações sobre a instalação e o uso do repositório, consulte a documentação do GitHub Actions, do Terraform, Ansible, Docker e Nginx.
 
