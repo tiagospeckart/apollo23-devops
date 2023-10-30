@@ -155,7 +155,7 @@ jobs:
         run: echo "env_url=`terraform output -raw db_endpoint`" >> $GITHUB_ENV
 
       # Display o de_endpoint
-      - name: Display db)endpoint Set
+      - name: Display db endpoint Set
         run: |
           echo "${env_url}" > endpoint_db
           cat endpoint_db
