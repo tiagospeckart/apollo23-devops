@@ -34,9 +34,9 @@ Incluir uma camada de gamificação e interação ao se inscrever em uma palestr
 
 Para instalar e usar o repositório, você precisará seguir estas etapas:
 
-1.  Crie uma conta no GitHub e clone o repositório para sua máquina local.
+1.  Crie uma conta no GitHub e clone este repositório e os de FLUTTER e JAVA para sua máquina local e após de um push deles para sua conta GitHub.
 2.  Obtenha acesso ao provider cloud AWS.
-3.  Insira as seguintes variáveis de ambiente nos Secrets do Github:
+3.  Insira as seguintes variáveis de ambiente no Secrets do Repositório com estes arquivos e diretórios do seu Github:
 
 ```
 AWS_ACCESS_KEY_ID: <seu_id_de_acesso_da_aws>
@@ -56,8 +56,9 @@ SCHEMA: <estrutura_lógica_do_banco_de_dados_utilizada>
 
 ```
 
-4.  Configure o Terraform para seu ambiente.
-5.  Faça um push ou pull request na branch "main" do repositório.
+4.  Adicione a chave SSH pública nos seus repositórios de FLUTTER e JAVA no deploy key.
+5.  Configure o Terraform para seu ambiente.
+6.  Faça um push ou pull request na branch "main" do repositório.
 
 O fluxo de trabalho do GitHub será executado e provisionará duas instâncias AWS, um RDS PostgreSQL, e as apliações backend e frontend em cada instância para você.
 
@@ -65,11 +66,12 @@ Após o provisionamento, você poderá acessar a aplicação no seguinte endere�
 
 ```
 http://<endereço_ip_da_instância_backend>:8000/api/swagger-ui/index.html
-http://admin.e-venture.devs2blu.dev.br/api/swagger-ui/index.html
 
 ```
 
-Para obter mais informações sobre a instalação e o uso do repositório, consulte a documentação do GitHub Actions e do Terraform.
+7. Para certificação SSL e configuração de um domínio como por exemplo seudomínio.com.br, siga as instruções do Readme.md da pasta ssl.  
+
+Para obter mais informações sobre a instalação e o uso do repositório, consulte a documentação do GitHub Actions, do Terraform, Ansible, Docker e Nginx.
 
 Aqui estão algumas dicas adicionais para usar o repositório:
 
