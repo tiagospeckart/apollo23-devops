@@ -43,20 +43,29 @@ AWS_ACCESS_KEY_ID: <seu_id_de_acesso_da_aws>
 AWS_SECRET_ACCESS_KEY: <sua_chave_secreta_da_aws>
 AWS_DEFAULT_REGION: <sua_região_da_aws>
 SSH_PRIVATE_KEY: <sua_chave_privada_do_ssh>
+SSH_PUBLIC_KEY: <sua_chave_pública_do_ssh>
 TF_VAR_db_username: <nome_de_usuário_do_banco_de_dados>
 TF_VAR_db_password: <senha_do_banco_de_dados>
+
+Para o arquivo .env:
+
+PROFILE: <seu_perfil_de_produção_do_spring_boot>
+DATABASE: <nome_do_banco_de_dados>
+PORT: <porta_de_conexão_banco_de_dados>
+SCHEMA: <estrutura_lógica_do_banco_de_dados_utilizada>
 
 ```
 
 4.  Configure o Terraform para seu ambiente.
 5.  Faça um push ou pull request na branch "main" do repositório.
 
-O fluxo de trabalho do GitHub será executado e provisionará uma instância AWS e uma aplicação para você.
+O fluxo de trabalho do GitHub será executado e provisionará duas instâncias AWS, um RDS PostgreSQL, e as apliações backend e frontend em cada instância para você.
 
 Após o provisionamento, você poderá acessar a aplicação no seguinte endereço:
 
 ```
-http://<endereço_ip_da_instância_backend>:8000
+http://<endereço_ip_da_instância_backend>:8000/api/swagger-ui/index.html
+http://admin.e-venture.devs2blu.dev.br/api/swagger-ui/index.html
 
 ```
 
@@ -82,7 +91,7 @@ O repositório está organizado da seguinte forma:
 -   `.gitignore`: contém os arquivos e pastas que devem ser ignorados pelo Git.
 -   `LICENSE`: contém a licença da aplicação.
 -   `README.md`: este documento.
--   `backend.tf`: contém os recursos do Terraform para o backend da aplicação.
+-   `backend.tf`: contém o tfstate do Terraform para o backend do provisionamento.
 -   `inventory.ini`: contém as configurações do Ansible para o backend da aplicação.
 -   `key.tf`: contém a chave pública do SSH para o backend da aplicação.
 -   `main.tf`: contém a configuração principal do Terraform.
@@ -90,6 +99,7 @@ O repositório está organizado da seguinte forma:
 -   `variables.tf`: contém as variáveis do Terraform.
 -   `playbook-back.yml`: contém o playbook do Ansible para o backend da aplicação.
 -   `playbook-front.yml`: contém o playbook do Ansible para o frontend da aplicação.
+-   `.env.j2`: configuração de forma dinâmica das variáveis do .env da aplicação backend.
 
 **Arquitetura**
 
@@ -101,6 +111,7 @@ A aplicação usa duas instâncias EC2 separadas, uma para o backend e outra par
 -   Instância EC2 para o backend:  `aws_instance.apollo23_backend_vm`
 -   Instância EC2 para o frontend:  `aws_instance.apollo23_frontend_vm`
 -   Banco de dados RDS PostgreSQL:  `aws_db_instance.db_apollo23`
+-   S3 Bucket:   `apollo23-hackweek-state`
 
 **Descrição dos recursos**
 
